@@ -106,6 +106,31 @@ const controller = {
   generateCards() {
     view.displayCardElement(utility.getRandomNumberArray(52))
   },
+
+  //依照不同的遊戲狀態，做不同的行為
+  dispatchCardAction(card){
+    // 做一個檢查，如果他沒有牌背的class就直接結束
+    if (!card.classList.contains('back')) {
+      return
+    }
+    //如果他是牌背的話，依照不同情況:
+    switch (this.currentState) {
+      // 如果他是第一張牌 >> 1翻牌 2.存入model.revealedCards陣列裡面 3.進入SecondCardAwaits狀態
+      case GAME_STATE.FirstCardAwaits:
+        view.flipCard(card)
+        model.revealedCards.push(card)
+        this.currentState = GAME_STATE.SecondCardAwaits
+        break
+      // 在 SecondCardAwaits 狀態點擊卡片的話，會將卡片翻開，接著檢查翻開的兩張卡是否數字相同
+      case GAME_STATE.SecondCardAwaits:
+        view.flipCard(card)
+        model.revealedCards.push(card)
+        // 判斷配對是否成功
+        break
+    }
+    console.log('this.currentState', this.currentState)
+    console.log('revealedCards', model.revealedCards.map(card => card.dataset.index))
+  }
 }
 controller.generateCards() //取代view.displayCardElement()
 
@@ -117,6 +142,6 @@ const model = {
 // 加入點擊時翻牌的事件監聽器
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('click', event => {
-    view.flipCard(card)
+    controller.dispatchCardAction(card)
   })
 })
