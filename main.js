@@ -108,6 +108,19 @@ const view = {
       card.addEventListener('animationend', event => event.target.classList.remove('wrong'), { once: true })
     })
   },
+
+  //遊戲結束畫面
+  showGameFinished() {
+    const div = document.createElement('div')
+    div.classList.add('completed')
+    div.innerHTML = `
+      <p>Complete!</p>
+      <p>Score: ${model.score}</p>
+      <p>You've tried: ${model.triedTimes} times</p>
+    `
+    const header = document.querySelector('#header')
+    header.before(div)
+  }
 }
 
 // 洗牌機制
@@ -159,6 +172,13 @@ const controller = {
           view.pairCard(model.revealedCards[0])
           view.pairCard(model.revealedCards[1])
           model.revealedCards = []
+          //遊戲結束
+          if (model.score === 260) {
+            console.log('showGameFinished')
+            this.currentState = GAME_STATE.GameFinished
+            view.showGameFinished()  // 加在這裡
+            return
+          }
           this.currentState = GAME_STATE.FirstCardAwaits
         } else {
           // 配對失敗 ， 1.進入CardsMatchFailed狀態維持一秒 2.翻回背面 3.進入FirstCardAwaits狀態
