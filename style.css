@@ -20,17 +20,17 @@
   /* 用 space-around 的設定，讓元素聚集在中間，且保持均分的間隔 */
   justify-content: space-around;
 }
-
+/* 調整花色大小以及置中 */
 .card img {
   max-width: 30%;
   align-self: center;
 }
-
+/* 調整字體大小 */
 .card p {
   margin: 3px;
   font-size: 10px;
 }
-
+/* 將右下角字體反轉 */
 .card p:last-child {
   transform: rotate(180deg);
 }
