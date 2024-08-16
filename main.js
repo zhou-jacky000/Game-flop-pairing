@@ -8,17 +8,25 @@ const Symbols = [
 
 const view = {
   // 取得卡片內容
-  getCardElement(index){
-    //卡牌數字是 index 除以 13後的「餘數 +1」，運算時記得加上 Math.floor，因為我們只需要整數。
-    const number = this.transformNumber((index % 13) +1) 
-    const symbols = Symbols[Math.floor(index/13)]
+  // 將牌面分開處理
 
-    return `<div class="card">
-      <p>${number}</p>
+  // 正面
+  getCardContent(index){
+    //卡牌數字是 index 除以 13後的「餘數 +1」，運算時記得加上 Math.floor，因為我們只需要整數。
+    const number = this.transformNumber((index % 13) + 1)
+    const symbols = Symbols[Math.floor(index / 13)]
+
+    return `<p>${number}</p>
       <img src="${symbols}" alt="">
-      <p>${number}</p>
-    </div>`
+      <p>${number}</p>`
   },
+
+  // 原本是將牌內容寫在這裡，但需要將牌面分開處理所以這裡只處理背面
+  // 背面
+  getCardElement(index){
+    return `<div data-index="${index}" class="card back"></div>`
+  },
+
   //特殊數字轉換A、J、Q、K將此函式放入上方number變數中
   transformNumber(number) {
     switch (number) {
@@ -45,6 +53,20 @@ const view = {
     // rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join("");
     // 原先將陣列依序放入(上面那行)，但我們需要洗牌放入，所以將程式修改成以下
     rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join("");
+  },
+
+  // 新增翻牌機制
+  flipCard (card){
+    console.log(card)
+    if (card.classList.contains('back')){
+      //回傳正面
+      card.classList.remove('back')
+      card.innerHTML = this.getCardContent(Number(card.dataset.index))
+      return
+    }
+    //回傳反面
+    card.classList.add('back')
+    card.innerHTML = null
   }
 }
 
@@ -60,3 +82,10 @@ const utility = {
   }
 }
 view.displayCardElement()
+
+// 加入點擊時翻牌的事件監聽器
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', event => {
+    view.flipCard(card)
+  })
+})
