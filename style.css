@@ -3,6 +3,10 @@
   display: flex;
   /* 版面換行 */
   flex-wrap: wrap;
+  /* 新增：寬度和標頭一致 */
+  width: 85%;
+  /* 新增：置中 */
+  margin: 0 auto;
 }
 
 .card {
@@ -11,7 +15,7 @@
     flex-basis: 7%; >> 控制 item 在容器裡佔的寬度
     flex-grow: 0; >> 若有剩餘空間是否分配
     flex-shrink: 1; >> 若空間不足是否做收縮*/ 
-  flex: 7% 0 1;
+  flex: 7% 1 1;
   /* 依視窗的寬度等比例變化 */
   height: 8vw;
   border: 3.5px solid salmon;
@@ -47,4 +51,35 @@
 /* 配對成功換底色 */
 .paired {
   background-color: #dae0e3;
+}
+/* 標題的部分 */
+#header {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 85%;
+}
+
+#header .title {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#header .title img {
+  max-width: 3em;
+}
+
+#header .title h2 {
+  padding-left: 0.5em;
+}
+
+#header .score {
+  margin: 0;
+  color: #6c90ac;
+}
+
+#header .tried {
+  margin-top: 0;
 }

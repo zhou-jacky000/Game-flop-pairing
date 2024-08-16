@@ -88,6 +88,15 @@ const view = {
   //若成功配對讓卡片在牌桌上維持翻開
   pairCard(card) {
     card.classList.add('paired')
+  },
+
+  //顯示分數
+  renderScore(score) {
+    document.querySelector(".score").textContent = `Score: ${score}`;
+  },
+  //顯示嘗試次數
+  renderTriedTimes(times) {
+    document.querySelector(".tried").textContent = `You've tried: ${times} times`;
   }
 }
 
@@ -128,11 +137,14 @@ const controller = {
         break
       // 在 SecondCardAwaits 狀態點擊卡片的話，會將卡片翻開，接著檢查翻開的兩張卡是否數字相同
       case GAME_STATE.SecondCardAwaits:
+        // 新增只要切換至 SecondCardAwaits，嘗試次數就要 +1
+        view.renderTriedTimes(++model.triedTimes)
         view.flipCard(card)
         model.revealedCards.push(card)
         // 判斷配對是否成功
         if (model.isRevealedCardsMatched()) {
-          // 配對成功 ， 1.維持翻開 2.換底色 3.進入FirstCardAwaits狀態
+          // 配對成功 ， 1.分數就要+10 2.維持翻開 3.換底色 4.進入FirstCardAwaits狀態
+          view.renderScore(model.score += 10)
           this.currentState = GAME_STATE.CardsMatched
           view.pairCard(model.revealedCards[0])
           view.pairCard(model.revealedCards[1])
@@ -163,7 +175,10 @@ const model = {
   //提取 revealedCards 陣列中暫存的兩個值，並用 === 比對是否相等，若相等就回傳 true，反之則為 false。
   isRevealedCardsMatched() {
     return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
-  }
+  },
+
+  score: 0,
+  triedTimes: 0
 }
 
 // 加入點擊時翻牌的事件監聽器
