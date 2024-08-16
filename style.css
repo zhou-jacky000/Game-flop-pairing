@@ -1,0 +1,36 @@
+#cards {
+  /* 使用flex來佈局 */
+  display: flex;
+}
+
+.card {
+  /* 每個 item 分配容器寬度 */
+  /* flex 是一個縮寫，依序代表： 
+    flex-basis: 7%; >> 控制 item 在容器裡佔的寬度
+    flex-grow: 0; >> 若有剩餘空間是否分配
+    flex-shrink: 1; >> 若空間不足是否做收縮*/ 
+  flex: 7% 0 1;
+  /* 依視窗的寬度等比例變化 */
+  height: 8vw;
+  border: 2px solid salmon;
+  /* 為了要控制 .card 內部的數字和花色，也讓 .card 變成一個 flex 容器 */
+  display: flex;
+  /* 排序從上到下，再從左到右。*/
+  flex-direction: column;
+  /* 用 space-around 的設定，讓元素聚集在中間，且保持均分的間隔 */
+  justify-content: space-around;
+}
+
+.card img {
+  max-width: 30%;
+  align-self: center;
+}
+
+.card p {
+  margin: 3px;
+  font-size: 10px;
+}
+
+.card p:last-child {
+  transform: rotate(180deg);
+}
