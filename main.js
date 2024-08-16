@@ -97,7 +97,17 @@ const view = {
   //顯示嘗試次數
   renderTriedTimes(times) {
     document.querySelector(".tried").textContent = `You've tried: ${times} times`;
-  }
+  },
+  // 增加失敗時的動畫，這個函式裡會為卡片加入 `.wrong` 類別，一旦加入就會開始跑動畫。
+  // 另外我們用事件監聽器來綁定「動畫結束事件(`animationend`)」，一旦動畫跑完一輪，就把 `.wrong` 這個 class 拿掉。
+  // 最後的 `{once: true}` 是要求在事件執行一次之後，就要卸載這個監聽器。
+  // 因為同一張卡片可能會被點錯好幾次，每一次都需要動態地掛上一個新的監聽器，並且用完就要卸載。
+  appendWrongAnimation(...cards) {
+    cards.map(card => {
+      card.classList.add('wrong')
+      card.addEventListener('animationend', event => event.target.classList.remove('wrong'), { once: true })
+    })
+  },
 }
 
 // 洗牌機制
@@ -153,6 +163,7 @@ const controller = {
         } else {
           // 配對失敗 ， 1.進入CardsMatchFailed狀態維持一秒 2.翻回背面 3.進入FirstCardAwaits狀態
           this.currentState = GAME_STATE.CardsMatchFailed
+          view.appendWrongAnimation(...model.revealedCards)
           setTimeout(() => {
             view.flipCard(model.revealedCards[0])
             view.flipCard(model.revealedCards[1])
