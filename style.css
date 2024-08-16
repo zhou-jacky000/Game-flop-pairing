@@ -1,6 +1,8 @@
 #cards {
   /* 使用flex來佈局 */
   display: flex;
+  /* 版面換行 */
+  flex-wrap: wrap;
 }
 
 .card {
@@ -19,6 +21,9 @@
   flex-direction: column;
   /* 用 space-around 的設定，讓元素聚集在中間，且保持均分的間隔 */
   justify-content: space-around;
+
+  margin: 2px;
+  box-sizing: border-box;
 }
 /* 調整花色大小以及置中 */
 .card img {

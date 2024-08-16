@@ -38,7 +38,11 @@ const view = {
   // 將卡片內容放到容器裡面並顯示
   displayCardElement(){
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = this.getCardElement(13)
+    // 1.Array.from(Array(52).keys())的意思就是會將0 - 51的數字放入陣列裡面
+    // 2.map是依序將數字丟進 view.getCardElement()
+    // 3.join("") 把陣列合併成一個大字串，因為這樣才能當成 HTML template 來使用
+    // 4.最後再把組合好的 template 用 innerHTML 放進 #cards 元素裡
+    rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join("");
   }
 }
 view.displayCardElement()
