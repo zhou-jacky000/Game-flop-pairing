@@ -1,3 +1,12 @@
+//遊戲的狀態
+const GAME_STATE = {
+  FirstCardAwaits: "FirstCardAwaits",
+  SecondCardAwaits: "SecondCardAwaits",
+  CardsMatchFailed: "CardsMatchFailed",
+  CardsMatched: "CardsMatched",
+  GameFinished: "GameFinished",
+}
+
 // 花色圖片
 const Symbols = [
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17989/__.png', // 黑桃
@@ -44,16 +53,23 @@ const view = {
   },
 
   // 將卡片內容放到容器裡面並顯示
-  displayCardElement(){
+  displayCardElement(indexes){
     const rootElement = document.querySelector('#cards')
     // 1.Array.from(Array(52).keys())的意思就是會將0 - 51的數字放入陣列裡面
     // 2.map是依序將數字丟進 view.getCardElement()
     // 3.join("") 把陣列合併成一個大字串，因為這樣才能當成 HTML template 來使用
     // 4.最後再把組合好的 template 用 innerHTML 放進 #cards 元素裡
     // rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join("");
+
     // 原先將陣列依序放入(上面那行)，但我們需要洗牌放入，所以將程式修改成以下
-    rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join("");
+    // rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join("");
+
+    // 因為我們要把已經打散過的陣列傳入，然後單純讓他去做顯示的動作，所以要加入參數indexes，防止跟utility偶合，
+    // 而本displayCardElement是沒有參數的，因為一開始我們的此function是來call洗牌的function，但我們現在要請controller來call洗牌function，所以她就變成說我只接受洗完牌的陣列，然後把洗牌這個function交給controller去控制
+    rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join("");
+    
   },
+
 
   // 新增翻牌機制
   flipCard (card){
@@ -81,7 +97,22 @@ const utility = {
     return number
   }
 }
-view.displayCardElement()
+// view.displayCardElement()
+
+
+const controller = {
+  currentState: GAME_STATE.FirstCardAwaits,
+  //有點像GameStart的函式
+  generateCards() {
+    view.displayCardElement(utility.getRandomNumberArray(52))
+  },
+}
+controller.generateCards() //取代view.displayCardElement()
+
+const model = {
+  //revealedCards 是一個暫存牌組，使用者每次翻牌時，就先把卡片丟進這個牌組，集滿兩張牌時就要檢查配對有沒有成功，檢查完以後，這個暫存牌組就需要清空。
+  revealedCards: []
+}
 
 // 加入點擊時翻牌的事件監聽器
 document.querySelectorAll('.card').forEach(card => {

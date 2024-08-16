@@ -33,7 +33,7 @@
 /* 調整字體大小 */
 .card p {
   margin: 3px;
-  font-size: 10px;
+  font-size: 20px;
 }
 /* 將右下角字體反轉 */
 .card p:last-child {
