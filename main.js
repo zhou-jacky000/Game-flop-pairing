@@ -83,6 +83,11 @@ const view = {
     //回傳反面
     card.classList.add('back')
     card.innerHTML = null
+  },
+
+  //若成功配對讓卡片在牌桌上維持翻開
+  pairCard(card) {
+    card.classList.add('paired')
   }
 }
 
@@ -126,6 +131,24 @@ const controller = {
         view.flipCard(card)
         model.revealedCards.push(card)
         // 判斷配對是否成功
+        if (model.isRevealedCardsMatched()) {
+          // 配對成功 ， 1.維持翻開 2.換底色 3.進入FirstCardAwaits狀態
+          this.currentState = GAME_STATE.CardsMatched
+          view.pairCard(model.revealedCards[0])
+          view.pairCard(model.revealedCards[1])
+          model.revealedCards = []
+          this.currentState = GAME_STATE.FirstCardAwaits
+        } else {
+          // 配對失敗 ， 1.進入CardsMatchFailed狀態維持一秒 2.翻回背面 3.進入FirstCardAwaits狀態
+          this.currentState = GAME_STATE.CardsMatchFailed
+          setTimeout(() => {
+            view.flipCard(model.revealedCards[0])
+            view.flipCard(model.revealedCards[1])
+            model.revealedCards = []
+            this.currentState = GAME_STATE.FirstCardAwaits
+          }, 1000)
+
+        }
         break
     }
     console.log('this.currentState', this.currentState)
@@ -136,7 +159,11 @@ controller.generateCards() //取代view.displayCardElement()
 
 const model = {
   //revealedCards 是一個暫存牌組，使用者每次翻牌時，就先把卡片丟進這個牌組，集滿兩張牌時就要檢查配對有沒有成功，檢查完以後，這個暫存牌組就需要清空。
-  revealedCards: []
+  revealedCards: [],
+  //提取 revealedCards 陣列中暫存的兩個值，並用 === 比對是否相等，若相等就回傳 true，反之則為 false。
+  isRevealedCardsMatched() {
+    return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
+  }
 }
 
 // 加入點擊時翻牌的事件監聽器
