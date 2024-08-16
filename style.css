@@ -14,7 +14,7 @@
   flex: 7% 0 1;
   /* 依視窗的寬度等比例變化 */
   height: 8vw;
-  border: 2px solid salmon;
+  border: 3.5px solid salmon;
   /* 為了要控制 .card 內部的數字和花色，也讓 .card 變成一個 flex 容器 */
   display: flex;
   /* 排序從上到下，再從左到右。*/

@@ -42,7 +42,21 @@ const view = {
     // 2.map是依序將數字丟進 view.getCardElement()
     // 3.join("") 把陣列合併成一個大字串，因為這樣才能當成 HTML template 來使用
     // 4.最後再把組合好的 template 用 innerHTML 放進 #cards 元素裡
-    rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join("");
+    // rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join("");
+    // 原先將陣列依序放入(上面那行)，但我們需要洗牌放入，所以將程式修改成以下
+    rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join("");
+  }
+}
+
+// 洗牌機制
+const utility = {
+  getRandomNumberArray(count) {
+    const number = Array.from(Array(count).keys())
+    for (let index = number.length - 1; index > 0; index--) {
+      let randomIndex = Math.floor(Math.random() * (index + 1))
+        ;[number[index], number[randomIndex]] = [number[randomIndex], number[index]]
+    }
+    return number
   }
 }
 view.displayCardElement()
